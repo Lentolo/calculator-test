@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-  class Program
+  public class Program
   {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
+      System.Diagnostics.Debugger.Break();
       if (args[0] == "interactive")
       {
         Console.WriteLine("First argument: ");
@@ -35,4 +36,3 @@ namespace Calculator
     }
   }
 }
-
