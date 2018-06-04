@@ -1,7 +1,10 @@
-﻿namespace Calculator.Interfaces
+﻿using Calculator.Data;
+
+namespace Calculator.Interfaces
 {
   public interface IEngine : IOperation
   {
-    double Calculate(int first, int second);
+    double Calculate(Data.UiData data);
+    bool CheckData(Data.UiData data);
   }
 }

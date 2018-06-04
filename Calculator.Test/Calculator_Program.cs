@@ -14,12 +14,12 @@ namespace Calculator.Test
     {
       using (var output = new System.IO.StringWriter())
       {
-        using (var input = new System.IO.StringReader("5\r\n3\r\n"))
+        using (var input = new System.IO.StringReader("5\r\n-\r\n3\r\n"))
         {
           Console.SetOut(output);
           Console.SetIn(input);
           Calculator.Program.Main(new[] { "interactive" });
-          Assert.Equal("First argument: \r\nSecond argument: \r\nResult 8\r\n", output.ToString());
+          Assert.Equal("First argument: \r\nOperation: \r\nSecond argument: \r\nResult 2\r\n", output.ToString());
         }
       }
     }

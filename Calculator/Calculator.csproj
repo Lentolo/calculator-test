@@ -50,7 +50,10 @@
     <Compile Include="Classes\AddEngine.cs" />
     <Compile Include="Classes\ConsoleCalculator.cs" />
     <Compile Include="Classes\DefaultStringParser.cs" />
+    <Compile Include="Classes\DivideEngine.cs" />
     <Compile Include="Classes\FileCalculator.cs" />
+    <Compile Include="Classes\MultiplyEngine.cs" />
+    <Compile Include="Classes\SubtractEngine.cs" />
     <Compile Include="Interfaces\IEngine.cs" />
     <Compile Include="Interfaces\IOperation.cs" />
     <Compile Include="Interfaces\IStringParser.cs" />

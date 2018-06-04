@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using Calculator.Data;
@@ -23,12 +24,49 @@ namespace Calculator.Classes
           new
           {
               Text = "First argument: ",
-              Setter = (Action<int>) (v => rval.First = v)
+              ErrorMessage = "Invalid value [{0}]",
+              Parser = (Func<string, bool>) (str =>
+                                              {
+                                                var val = Program.InstancesBuilder.Resolve<IStringParser>().Parse(str);
+                                                if (val != null)
+                                                {
+                                                  rval.First = val.Value;
+                                                  return true;
+                                                }
+
+                                                return false;
+                                              })
+          },
+          new
+          {
+              Text = "Operation: ",
+              ErrorMessage = "Invalid operation [{0}]",
+              Parser = (Func<string, bool>) (str =>
+                                              {
+                                                if (Program.InstancesBuilder.Resolve<IEnumerable<IEngine>>().Any(i => string.Compare(i.Operation, str, StringComparison.OrdinalIgnoreCase) == 0))
+                                                {
+                                                  rval.Operation = str;
+                                                  return true;
+                                                }
+
+                                                return false;
+                                              })
           },
           new
           {
               Text = "Second argument: ",
-              Setter = (Action<int>) (v => rval.Second = v)
+              ErrorMessage = "Invalid value [{0}]",
+              Parser = (Func<string, bool>) (str =>
+                                              {
+                                                var val = Program.InstancesBuilder.Resolve<IStringParser>().Parse(str);
+                                                if (val != null)
+                                                {
+                                                  rval.Second = val.Value;
+                                                  return true;
+                                                }
+
+                                                return false;
+                                              })
           }
       };
       foreach (var i in actionsArray)
@@ -37,22 +75,31 @@ namespace Calculator.Classes
         {
           Console.WriteLine(i.Text);
           var str = Console.ReadLine();
-          var val = Program.InstancesBuilder.Resolve<IStringParser>().Parse(str);
-          if (val != null)
+          if (i.Parser(str))
           {
-            i.Setter(val.Value);
             break;
           }
 
-          Console.WriteLine($"Invalid value [{str}]");
+          Console.WriteLine(i.ErrorMessage, str);
         }
       }
 
       return rval;
     }
+    public bool CheckData(IEngine engine, UiData data)
+    {
+      if (!engine.CheckData(data))
+      {
+        Console.WriteLine($"Invalid data for the operator [{engine.Operation}]");
+        return false;
+      }
+
+      return true;
+    }
     public void DisplayResult(IEngine engine, UiData data)
     {
-      Console.WriteLine("Result " + engine.Calculate(data.First, data.Second));
+      Console.WriteLine("Result " + engine.Calculate(data));
+      Console.ReadLine();
     }
   }
 }
