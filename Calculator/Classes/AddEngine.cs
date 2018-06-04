@@ -2,7 +2,7 @@
 
 namespace Calculator.Classes
 {
-  public class Add : IEngine
+  public class AddEngine : IEngine
   {
     public string Operation => "+";
     public double Calculate(int first, int second)

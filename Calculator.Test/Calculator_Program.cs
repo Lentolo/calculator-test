@@ -19,7 +19,7 @@ namespace Calculator.Test
           Console.SetOut(output);
           Console.SetIn(input);
           Calculator.Program.Main(new[] { "interactive" });
-          Assert.Equal("First argument: \r\nSecond Argument: \r\nResult8\r\n", output.ToString());
+          Assert.Equal("First argument: \r\nSecond argument: \r\nResult 8\r\n", output.ToString());
         }
       }
     }
@@ -30,7 +30,7 @@ namespace Calculator.Test
       {
         Console.SetOut(output);
         Calculator.Program.Main(new[] { "testfile.txt" });
-        Assert.Equal("Result13\r\n", output.ToString());
+        Assert.Equal("Result 13\r\n", output.ToString());
       }
     }
   }

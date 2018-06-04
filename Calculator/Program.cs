@@ -1,36 +1,41 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using Autofac;
+using Calculator.Classes;
+using Calculator.Interfaces;
 
 namespace Calculator
 {
   public class Program
   {
-    public static IContainer InstancesBuyilder; 
-    static void Register()
+    public static IContainer InstancesBuilder;
+    private static void Register()
     {
-      var b=new Autofac.ContainerBuilder();
-      b.RegisterType<Classes.ConsoleCalculator>().Keyed<Interfaces.ICalculator>("interactive");
-      InstancesBuyilder=b.Build();
+      var containerBuilder = new ContainerBuilder();
+      containerBuilder.RegisterType<DefaultStringParser>().As<IStringParser>();
+      containerBuilder.RegisterType<ConsoleCalculator>().As<ICalculator>();
+      containerBuilder.RegisterType<FileCalculator>().As<ICalculator>();
+      containerBuilder.RegisterType<AddEngine>().As<IEngine>();
+      InstancesBuilder = containerBuilder.Build();
     }
     public static void Main(string[] args)
     {
-      if (args[0] == "interactive")
+      Register();
+      var calculator = InstancesBuilder.Resolve<IEnumerable<ICalculator>>().FirstOrDefault(r => r.UseMe(args));
+      if (calculator == null)
       {
-        Console.WriteLine("First argument: ");
-        var readLine = Console.ReadLine();
-        Console.WriteLine("Second Argument: ");
-        var secondArgoument = Console.ReadLine();
-        Console.WriteLine("Result" + (int.Parse(readLine) + int.Parse(secondArgoument)));
+        throw new ArgumentOutOfRangeException("Calculator not found!");
       }
-      else
+
+      var data = calculator.ReadData();
+      var engine = InstancesBuilder.Resolve<IEnumerable<IEngine>>().FirstOrDefault(r => string.Compare(r.Operation, data.Operation, StringComparison.OrdinalIgnoreCase) == 0);
+      if (engine == null)
       {
-        var readAllText = File.ReadAllText(args[0]);
-        var strings = readAllText.Split("\r\n".ToCharArray());
-        var firstArgument = strings[0];
-        var secondArgoument = strings[1];
-        Console.WriteLine("Result" + (int.Parse(firstArgument) + int.Parse(secondArgoument)));
+        throw new ArgumentOutOfRangeException("Engine not found!");
       }
+
+      calculator.DisplayResult(engine, data);
     }
   }
 }
